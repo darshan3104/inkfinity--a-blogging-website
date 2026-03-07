@@ -5,17 +5,7 @@ const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:5000";
 const api = axios.create({
     baseURL: API_BASE_URL,
     headers: { "Content-Type": "application/json" },
-});
-
-// Attach JWT token on every request
-api.interceptors.request.use((config) => {
-    if (typeof window !== "undefined") {
-        const token = localStorage.getItem("inkfinity_token");
-        if (token) {
-            config.headers.Authorization = `Bearer ${token}`;
-        }
-    }
-    return config;
+    withCredentials: true,
 });
 
 // Auth APIs
@@ -24,6 +14,8 @@ export const authApi = {
     verifyOtp: (data) => api.post("/api/auth/verify-otp", data),
     login: (data) => api.post("/api/auth/login", data),
     resendOtp: (data) => api.post("/api/auth/resend-otp", data),
+    me: () => api.get("/api/auth/me"),
+    logout: () => api.post("/api/auth/logout"),
 };
 
 // Posts APIs

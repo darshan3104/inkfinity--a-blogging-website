@@ -1,11 +1,13 @@
-const express = require('express');
-const router = express.Router();
-const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
-const User = require('../models/User');
-const { sendOtpEmail } = require('../utils/mailer');
+import express from "express";
+import bcrypt from "bcryptjs";
+import jwt from "jsonwebtoken";
+import User from "../models/User.js";
+import { sendOtpEmail } from "../utils/mailer.js";
+import authMiddleware from "../middleware/auth.js";
 
 // Generate 6-digit OTP
+const router = express.Router();
+
 const generateOtp = () => Math.floor(100000 + Math.random() * 900000).toString();
 
 // POST /api/auth/register
@@ -112,9 +114,15 @@ router.post('/login', async (req, res) => {
             { expiresIn: '7d' }
         );
 
+        res.cookie('token', token, {
+            httpOnly: true,
+            secure: process.env.NODE_ENV === 'production',
+            sameSite: 'strict',
+            maxAge: 7 * 24 * 60 * 60 * 1000 // 7 days
+        });
+
         res.status(200).json({
             message: 'Login successful.',
-            token,
             user: { id: user._id, name: user.name, email: user.email },
         });
     } catch (err) {
@@ -147,4 +155,29 @@ router.post('/resend-otp', async (req, res) => {
     }
 });
 
-module.exports = router;
+// GET /api/auth/me
+router.get('/me', authMiddleware, async (req, res) => {
+    try {
+        const user = await User.findById(req.user.id).select('-password');
+        if (!user) return res.status(404).json({ message: 'User not found.' });
+
+        res.status(200).json({
+            user: { id: user._id, name: user.name, email: user.email, isVerified: user.isVerified }
+        });
+    } catch (err) {
+        console.error('Get me error:', err);
+        res.status(500).json({ message: 'Server error.' });
+    }
+});
+
+// POST /api/auth/logout
+router.post('/logout', (req, res) => {
+    res.clearCookie('token', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'strict',
+    });
+    res.status(200).json({ message: 'Logged out successfully.' });
+});
+
+export default router;

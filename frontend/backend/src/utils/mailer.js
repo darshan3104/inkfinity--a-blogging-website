@@ -1,19 +1,22 @@
-const nodemailer = require('nodemailer');
+import nodemailer from "nodemailer";
 
-const transporter = nodemailer.createTransport({
-    service: 'gmail',
+const createTransporter = () => {
+  return nodemailer.createTransport({
+    host: 'smtp.sendgrid.net',
+    port: 587,
     auth: {
-        user: process.env.EMAIL_USER,
-        pass: process.env.EMAIL_PASS,
+      user: 'apikey', // SendGrid requires exactly the string 'apikey'
+      pass: process.env.SENDGRID_API_KEY,
     },
-});
+  });
+};
 
 const sendOtpEmail = async (to, otp) => {
-    const mailOptions = {
-        from: `"Inkfinity" <${process.env.EMAIL_USER}>`,
-        to,
-        subject: 'Verify your Inkfinity account',
-        html: `
+  const mailOptions = {
+    from: `"Inkfinity" <${process.env.EMAIL_FROM_ADDRESS}>`,
+    to,
+    subject: 'Verify your Inkfinity account',
+    html: `
       <!DOCTYPE html>
       <html>
         <head>
@@ -53,9 +56,16 @@ const sendOtpEmail = async (to, otp) => {
         </body>
       </html>
     `,
-    };
+  };
 
+  try {
+    const transporter = createTransporter();
     await transporter.sendMail(mailOptions);
+    console.log("OTP email sent successfully via SendGrid!");
+  } catch (error) {
+    console.error("Error sending OTP email via SendGrid:", error);
+    throw new Error("Could not send email.");
+  }
 };
 
-module.exports = { sendOtpEmail };
+export { sendOtpEmail };

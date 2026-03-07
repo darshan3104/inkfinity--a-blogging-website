@@ -11,8 +11,8 @@ import { ImagePlus, Loader2, Send, X } from "lucide-react";
 import toast from "react-hot-toast";
 
 // Dynamically import react-quill to avoid SSR issues
-const ReactQuill = dynamic(() => import("react-quill"), { ssr: false });
-import "react-quill/dist/quill.snow.css";
+const ReactQuill = dynamic(() => import("react-quill-new"), { ssr: false });
+import "react-quill-new/dist/quill.snow.css";
 
 const QUILL_MODULES = {
   toolbar: [

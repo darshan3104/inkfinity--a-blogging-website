@@ -1,54 +1,54 @@
 "use client";
 
 import { createContext, useContext, useState, useEffect } from "react";
+import { authApi } from "../lib/api";
 
 const AuthContext = createContext(null);
 
-export function AuthProvider({ children }) {
+export const AuthProvider = ({ children }) => {
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState(null);
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const storedToken = localStorage.getItem("inkfinity_token");
-    const storedUser = localStorage.getItem("inkfinity_user");
-    if (storedToken && storedUser && storedUser !== "undefined") {
+    const checkAuthStatus = async () => {
       try {
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        setUser(JSON.parse(storedUser));
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-        setToken(storedToken);
+        const response = await authApi.me();
+        setUser(response.data.user);
+        setIsAuthenticated(true);
       } catch (err) {
-        console.error("Failed to parse user from localStorage", err);
-        localStorage.removeItem("inkfinity_token");
-        localStorage.removeItem("inkfinity_user");
+        setUser(null);
+        setIsAuthenticated(false);
+      } finally {
+        setLoading(false);
       }
-    }
-    setLoading(false);
+    };
+
+    checkAuthStatus();
   }, []);
 
-  // login: stores auth state — caller is responsible for redirecting
-  const login = (userData, tokenData) => {
+  const login = (userData) => {
     setUser(userData);
-    setToken(tokenData);
-    localStorage.setItem("inkfinity_token", tokenData);
-    localStorage.setItem("inkfinity_user", JSON.stringify(userData));
+    setIsAuthenticated(true);
   };
 
-  // logout: clears auth state — caller is responsible for redirecting
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("inkfinity_token");
-    localStorage.removeItem("inkfinity_user");
+  const logout = async () => {
+    try {
+      await authApi.logout();
+    } catch (err) {
+      console.error("Logout error", err);
+    } finally {
+      setUser(null);
+      setIsAuthenticated(false);
+    }
   };
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, loading, isAuthenticated: !!token }}>
-      {children}
+    <AuthContext.Provider value={{ user, isAuthenticated, login, logout, loading }}>
+      {!loading && children}
     </AuthContext.Provider>
   );
-}
+};
 
 export function useAuth() {
   const context = useContext(AuthContext);

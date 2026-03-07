@@ -29,7 +29,7 @@ export default function LoginPage() {
     setLoading(true);
     try {
       const { data } = await authApi.login(form);
-      login(data.user, data.token);
+      login(data.user);
       toast.success(`Welcome back, ${data.user.name}!`);
       router.push("/dashboard");
     } catch (err) {

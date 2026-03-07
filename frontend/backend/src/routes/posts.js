@@ -1,9 +1,10 @@
-const express = require('express');
-const router = express.Router();
-const Post = require('../models/Post');
-const authMiddleware = require('../middleware/auth');
+import express from "express";
+import authMiddleware from '../middleware/auth.js';
+import Post from '../models/Post.js';
 
 // GET /api/posts — Public, paginated
+const router = express.Router();
+
 router.get('/', async (req, res) => {
     try {
         const page = parseInt(req.query.page) || 1;
@@ -115,4 +116,4 @@ router.delete('/:id', authMiddleware, async (req, res) => {
     }
 });
 
-module.exports = router;
+export default router;
