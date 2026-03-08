@@ -5,7 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import { useAuth } from "@/context/AuthContext";
 import { Button } from "@/components/ui/button";
-import { PenLine, Menu, X, BookOpen, LogOut, LayoutDashboard } from "lucide-react";
+import { PenLine, Menu, X, LogOut, LayoutDashboard } from "lucide-react";
 
 export default function Navbar() {
   const { isAuthenticated, user, logout } = useAuth();
@@ -56,12 +56,13 @@ export default function Navbar() {
               <Link
                 key={link.href}
                 href={link.href}
-                className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
+                className={`flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
                   pathname === link.href
                     ? "text-violet-600 bg-violet-50"
                     : "text-slate-600 hover:text-violet-600 hover:bg-slate-50"
                 }`}
               >
+                {link.icon && <link.icon className="w-3.5 h-3.5" />}
                 {link.label}
               </Link>
             ))}

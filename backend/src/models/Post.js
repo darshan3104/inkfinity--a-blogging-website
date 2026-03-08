@@ -24,6 +24,12 @@ const postSchema = new mongoose.Schema(
             type: String,
             default: '',
         },
+        likes: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: 'User',
+            },
+        ],
     },
     { timestamps: true }
 );
@@ -36,5 +42,13 @@ postSchema.pre('save', function (next) {
     }
     next();
 });
+
+// Virtual: like count
+postSchema.virtual('likeCount').get(function () {
+    return this.likes ? this.likes.length : 0;
+});
+
+postSchema.set('toJSON', { virtuals: true });
+postSchema.set('toObject', { virtuals: true });
 
 export default mongoose.model('Post', postSchema);
