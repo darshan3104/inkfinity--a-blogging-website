@@ -56,57 +56,55 @@ export default function ForumPage() {
   };
 
   return (
-    <div style={{ background: "linear-gradient(135deg, #0f0c29 0%, #1a1042 40%, #141828 100%)" }}>
-
+    <div className="min-h-screen bg-[#F8F9FA] pb-24">
       {/* ── Hero ────────────────────────────────────── */}
-      <section className="relative pt-28 pb-20 px-6 overflow-hidden">
-        {/* Decorative blobs */}
-        <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-violet-600/20 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-20 right-0 w-80 h-80 bg-indigo-500/15 rounded-full blur-3xl pointer-events-none" />
-        <div className="absolute top-20 left-0 w-64 h-64 bg-pink-500/10 rounded-full blur-3xl pointer-events-none" />
+      <section className="relative pt-12 pb-16 px-6 overflow-hidden">
+        {/* Decorative background subtle gradients */}
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-violet-100/50 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/3" />
+        <div className="absolute bottom-0 left-0 w-[400px] h-[400px] bg-blue-100/50 rounded-full blur-[80px] pointer-events-none translate-y-1/3 -translate-x-1/3" />
 
-        <div className="max-w-4xl mx-auto text-center relative">
-          <div className="inline-flex items-center gap-2 bg-violet-500/20 border border-violet-500/30 rounded-full px-4 py-1.5 text-violet-300 text-sm font-medium mb-6">
-            <Globe className="w-4 h-4 animate-pulse" />
+        <div className="max-w-4xl mx-auto text-center relative z-10">
+          <div className="inline-flex items-center gap-2 bg-indigo-50 border border-indigo-100 rounded-full px-4 py-1.5 text-indigo-700 text-sm font-semibold mb-6">
+            <Globe className="w-4 h-4 text-indigo-500 animate-[spin_4s_linear_infinite]" />
             Global Community Forum
           </div>
 
-          <h1 className="text-5xl md:text-6xl font-extrabold text-white mb-4 leading-tight tracking-tight">
+          <h1 className="text-4xl md:text-5xl font-extrabold text-[#0F172A] mb-4 leading-tight tracking-tight">
             Ideas from{" "}
-            <span className="bg-linear-to-r from-violet-400 via-pink-400 to-indigo-400 bg-clip-text text-transparent">
+            <span className="bg-gradient-to-r from-indigo-600 to-violet-600 bg-clip-text text-transparent">
               Every Corner
             </span>
           </h1>
-          <p className="text-slate-400 text-lg max-w-xl mx-auto mb-10">
+          <p className="text-slate-500 text-lg max-w-xl mx-auto mb-10">
             Explore, like, and discuss stories shared by writers around the world.
           </p>
 
           {/* Stats */}
           {total > 0 && !loading && (
-            <div className="inline-flex items-center gap-2 bg-white/5 border border-white/10 rounded-full px-5 py-2 text-slate-400 text-sm mb-8">
-              <BookOpen className="w-4 h-4 text-violet-400" />
+            <div className="inline-flex items-center gap-2 bg-white border border-slate-200 shadow-sm rounded-full px-5 py-2 text-slate-500 text-sm mb-8">
+              <BookOpen className="w-4 h-4 text-indigo-500" />
               <span>
-                <strong className="text-white">{total.toLocaleString()}</strong>{" "}
+                <strong className="text-slate-800">{total.toLocaleString()}</strong>{" "}
                 {total === 1 ? "story" : "stories"} in the community
               </span>
             </div>
           )}
 
           {/* Search */}
-          <form onSubmit={handleSearch} className="flex gap-3 max-w-lg mx-auto">
-            <div className="relative flex-1">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500 pointer-events-none" />
+          <form onSubmit={handleSearch} className="flex flex-col sm:flex-row gap-3 max-w-2xl mx-auto relative z-20">
+            <div className="relative flex-1 group">
+              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors pointer-events-none" />
               <input
                 type="text"
                 placeholder="Search all posts..."
                 value={searchInput}
                 onChange={(e) => setSearchInput(e.target.value)}
-                className="w-full pl-11 pr-4 h-12 rounded-2xl bg-white/10 border border-white/15 text-white placeholder:text-slate-500 focus:outline-none focus:ring-2 focus:ring-violet-500/60 focus:border-transparent text-sm backdrop-blur-sm"
+                className="w-full pl-12 pr-4 h-14 rounded-2xl bg-white border-2 border-slate-100 text-slate-800 placeholder:text-slate-400 focus:outline-none focus:border-indigo-500/30 focus:ring-4 focus:ring-indigo-500/10 text-[15px] shadow-sm transition-all"
               />
             </div>
             <button
               type="submit"
-              className="h-12 px-6 bg-linear-to-r from-violet-600 to-indigo-600 hover:from-violet-500 hover:to-indigo-500 text-white font-semibold rounded-2xl transition-all duration-200 shadow-lg shadow-violet-500/30 text-sm"
+              className="h-14 px-8 bg-[#0F172A] hover:bg-slate-800 text-white font-semibold rounded-2xl transition-all shadow-md active:scale-[0.98]"
             >
               Search
             </button>
@@ -115,22 +113,22 @@ export default function ForumPage() {
       </section>
 
       {/* ── Content ─────────────────────────────────── */}
-      <section className="max-w-7xl mx-auto px-6 pb-24">
+      <section className="max-w-7xl mx-auto px-6 relative z-10">
         {/* Toolbar */}
-        <div className="flex flex-wrap items-center justify-between gap-4 mb-8">
+        <div className="flex flex-wrap items-center justify-between gap-4 mb-8 bg-white p-2 rounded-2xl border border-slate-100 shadow-sm">
           {/* Sort Tabs */}
-          <div className="flex items-center gap-1 bg-white/5 border border-white/10 rounded-2xl p-1.5">
+          <div className="flex items-center gap-1">
             {SORT_OPTIONS.map(({ key, label, icon: Icon }) => (
               <button
                 key={key}
                 onClick={() => handleSort(key)}
-                className={`flex items-center gap-1.5 px-4 py-2 rounded-xl text-sm font-medium transition-all duration-200 ${
+                className={`flex items-center gap-2 px-4 py-2.5 rounded-xl text-[14px] font-semibold transition-all duration-200 ${
                   sort === key
-                    ? "bg-violet-600 text-white shadow-lg shadow-violet-500/30"
-                    : "text-slate-400 hover:text-white hover:bg-white/5"
+                    ? "bg-indigo-50/80 text-indigo-700"
+                    : "text-slate-500 hover:text-slate-800 hover:bg-slate-50"
                 }`}
               >
-                <Icon className="w-3.5 h-3.5" />
+                <Icon className={`w-4 h-4 ${sort === key ? "text-indigo-600" : "text-slate-400"}`} />
                 {label}
               </button>
             ))}
@@ -138,14 +136,15 @@ export default function ForumPage() {
 
           {/* Active search indicator */}
           {search && (
-            <div className="flex items-center gap-2 text-sm text-slate-400">
-              <span>
-                Results for{" "}
-                <span className="text-violet-400 font-semibold">&ldquo;{search}&rdquo;</span>
+            <div className="flex items-center gap-3 px-3">
+              <span className="text-sm text-slate-500 font-medium">
+                Results for {" "}
+                <span className="text-indigo-600 font-bold">&ldquo;{search}&rdquo;</span>
               </span>
+              <div className="w-[1px] h-4 bg-slate-200" />
               <button
                 onClick={() => { setSearch(""); setSearchInput(""); setPage(1); }}
-                className="text-rose-400 hover:text-rose-300 hover:underline text-xs"
+                className="text-slate-400 hover:text-rose-500 text-sm font-medium transition-colors"
               >
                 Clear
               </button>
@@ -155,35 +154,37 @@ export default function ForumPage() {
 
         {/* Grid */}
         {loading ? (
-          <div className="flex flex-col items-center justify-center py-32 gap-4">
-            <Loader2 className="w-9 h-9 text-violet-500 animate-spin" />
-            <p className="text-slate-500 text-sm">Loading stories...</p>
+          <div className="flex flex-col items-center justify-center py-20 gap-4">
+            <div className="w-12 h-12 bg-white rounded-xl shadow-sm border border-slate-100 flex items-center justify-center">
+              <Loader2 className="w-6 h-6 text-indigo-600 animate-spin" />
+            </div>
+            <p className="text-slate-500 text-sm font-medium">Loading stories...</p>
           </div>
         ) : posts.length === 0 ? (
-          <div className="flex flex-col items-center justify-center py-32 text-center">
-            <div className="w-20 h-20 rounded-full bg-white/5 border border-white/10 flex items-center justify-center mb-5">
-              <BookOpen className="w-9 h-9 text-slate-600" />
+          <div className="flex flex-col items-center justify-center py-24 text-center bg-white rounded-[24px] border border-slate-100 shadow-sm">
+            <div className="w-20 h-20 rounded-2xl bg-slate-50 border border-slate-100 flex items-center justify-center mb-5">
+              <BookOpen className="w-8 h-8 text-slate-400" />
             </div>
-            <h3 className="text-xl font-bold text-slate-300 mb-2">
+            <h3 className="text-[20px] font-bold text-slate-800 mb-2">
               {search ? "No results found" : "No posts yet"}
             </h3>
-            <p className="text-slate-500 text-sm max-w-xs">
+            <p className="text-slate-500 text-[15px] max-w-sm mb-6 leading-relaxed">
               {search
-                ? "Try a different search term or clear the filter."
-                : "Be the first to share your story with the world!"}
+                ? "We couldn't find anything matching your search. Try different keywords!"
+                : "The forum is currently empty. Be the first to share your creative writing with the world!"}
             </p>
             {search && (
               <button
                 onClick={() => { setSearch(""); setSearchInput(""); setPage(1); }}
-                className="mt-5 px-5 py-2 bg-violet-600/30 hover:bg-violet-600/50 border border-violet-500/30 text-violet-300 rounded-xl text-sm transition-all"
+                className="px-6 py-2.5 bg-indigo-50 hover:bg-indigo-100 text-indigo-600 font-semibold rounded-xl text-[15px] transition-colors"
               >
-                Clear Search
+                Clear Search Results
               </button>
             )}
           </div>
         ) : (
           <>
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
               {posts.map((post) => (
                 <ForumPostCard key={post._id} post={post} />
               ))}
@@ -191,16 +192,16 @@ export default function ForumPage() {
 
             {/* Pagination */}
             {totalPages > 1 && (
-              <div className="flex items-center justify-center gap-2 mt-14">
+              <div className="flex items-center justify-center gap-2 mt-12">
                 <button
                   disabled={page === 1}
                   onClick={() => setPage((p) => p - 1)}
-                  className="px-4 py-2 rounded-xl text-sm font-medium border border-white/10 text-slate-400 hover:bg-white/5 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-800 disabled:opacity-40 disabled:pointer-events-none transition-all shadow-sm"
                 >
-                  ← Previous
+                  Previous
                 </button>
 
-                <div className="flex gap-1">
+                <div className="flex gap-1.5 p-1 bg-white border border-slate-200 rounded-xl shadow-sm">
                   {Array.from({ length: totalPages }, (_, i) => i + 1)
                     .filter((p) => {
                       if (totalPages <= 7) return true;
@@ -217,17 +218,17 @@ export default function ForumPage() {
                     }, [])
                     .map((item, idx) =>
                       item === "..." ? (
-                        <span key={`dots-${idx}`} className="px-2 py-2 text-slate-600 text-sm">
+                        <span key={`dots-${idx}`} className="px-2 py-1.5 text-slate-400 text-sm font-bold">
                           …
                         </span>
                       ) : (
                         <button
                           key={item}
                           onClick={() => setPage(item)}
-                          className={`w-9 h-9 rounded-xl text-sm font-medium transition-all ${
+                          className={`min-w-[36px] h-9 rounded-lg text-[14px] font-bold transition-all ${
                             page === item
-                              ? "bg-violet-600 text-white shadow-lg shadow-violet-500/30"
-                              : "border border-white/10 text-slate-400 hover:bg-white/5 hover:text-white"
+                              ? "bg-indigo-600 text-white shadow-md shadow-indigo-500/20"
+                              : "text-slate-600 hover:bg-slate-100 hover:text-slate-900"
                           }`}
                         >
                           {item}
@@ -239,9 +240,9 @@ export default function ForumPage() {
                 <button
                   disabled={page === totalPages}
                   onClick={() => setPage((p) => p + 1)}
-                  className="px-4 py-2 rounded-xl text-sm font-medium border border-white/10 text-slate-400 hover:bg-white/5 hover:text-white disabled:opacity-30 disabled:cursor-not-allowed transition-all"
+                  className="px-4 py-2 bg-white border border-slate-200 rounded-xl text-sm font-bold text-slate-600 hover:bg-slate-50 hover:text-slate-800 disabled:opacity-40 disabled:pointer-events-none transition-all shadow-sm"
                 >
-                  Next →
+                  Next
                 </button>
               </div>
             )}

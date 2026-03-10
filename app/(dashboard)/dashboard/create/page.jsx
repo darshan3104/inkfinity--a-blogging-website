@@ -65,98 +65,115 @@ export default function CreatePostPage() {
   };
 
   return (
-    <div className="max-w-3xl mx-auto">
+    <div className="max-w-7xl mx-auto xl:px-8 py-6">
       {/* Header */}
-      <div className="mb-8">
-        <h1 className="text-2xl font-bold text-slate-800">Create New Post</h1>
-        <p className="text-sm text-slate-500 mt-1">Share your ideas with the world.</p>
+      <div className="mb-8 flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
+        <div>
+          <h1 className="text-3xl font-extrabold text-[#0B1527] tracking-tight">Create New Post</h1>
+          <p className="text-base text-slate-500 mt-2">Share your ideas with the world.</p>
+        </div>
       </div>
 
-      <form onSubmit={handleSubmit} className="space-y-6">
-        {/* Title */}
-        <div className="bg-white rounded-2xl border border-slate-100 p-6 space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="title" className="text-base font-semibold text-slate-700">
-              Post Title
+      <form onSubmit={handleSubmit} className="flex flex-col lg:flex-row gap-6 items-start">
+        
+        {/* Left Column (Title & Image) */}
+        <div className="w-full lg:w-[320px] shrink-0 flex flex-col gap-6">
+          
+          {/* Title */}
+          <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-[0px_2px_8px_0px_rgba(0,0,0,0.04)]">
+            <div className="space-y-3">
+              <Label htmlFor="title" className="text-sm font-semibold text-slate-600 block">
+                Post Title
+              </Label>
+              <Input
+                id="title"
+                type="text"
+                placeholder="Enter a compelling title..."
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                disabled={loading}
+                className="h-12 text-base rounded-xl bg-white border-slate-200 text-slate-900 focus:ring-blue-500 focus:border-blue-500 shadow-sm transition-all duration-200"
+              />
+            </div>
+          </div>
+
+          {/* Cover Image */}
+          <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-[0px_2px_8px_0px_rgba(0,0,0,0.04)]">
+            <Label className="text-sm font-semibold text-slate-600 mb-4 block">
+              Cover Image <span className="text-slate-400 font-normal">(optional)</span>
             </Label>
-            <Input
-              id="title"
-              type="text"
-              placeholder="Enter a compelling title..."
-              value={title}
-              onChange={(e) => setTitle(e.target.value)}
-              disabled={loading}
-              className="h-12 text-lg font-medium"
-            />
+            {coverPreview ? (
+              <div className="relative">
+                <img
+                  src={coverPreview}
+                  alt="Cover preview"
+                  className="w-full h-48 object-cover rounded-2xl border border-slate-200/50"
+                />
+                <button
+                  type="button"
+                  onClick={() => { setCoverImage(null); setCoverPreview(null); }}
+                  className="absolute top-3 right-3 bg-red-500 text-white rounded-full p-2 hover:bg-red-600 transition-all shadow-md"
+                >
+                  <X className="w-4 h-4" />
+                </button>
+              </div>
+            ) : (
+              <label className="flex flex-col items-center justify-center h-48 border border-dashed border-slate-300 rounded-2xl cursor-pointer hover:border-blue-500 bg-slate-50/50 hover:bg-blue-50 transition-all duration-200 group">
+                <div className="w-12 h-12 rounded-full bg-slate-100 flex items-center justify-center mb-3 group-hover:bg-blue-100 transition-colors">
+                  <ImagePlus className="w-5 h-5 text-slate-400 group-hover:text-blue-600 transition-colors" />
+                </div>
+                <span className="text-xs font-medium text-slate-500 text-center px-4">Click to upload (max 2MB)</span>
+                <input
+                  type="file"
+                  accept="image/*"
+                  className="hidden"
+                  onChange={handleImageUpload}
+                  disabled={loading}
+                />
+              </label>
+            )}
           </div>
         </div>
 
-        {/* Cover Image */}
-        <div className="bg-white rounded-2xl border border-slate-100 p-6">
-          <Label className="text-base font-semibold text-slate-700 mb-3 block">
-            Cover Image <span className="text-slate-400 font-normal">(optional)</span>
-          </Label>
-          {coverPreview ? (
-            <div className="relative">
-              <img
-                src={coverPreview}
-                alt="Cover preview"
-                className="w-full h-48 object-cover rounded-xl"
+        {/* Right Column (Content Editor & Actions) */}
+        <div className="w-full flex-1 flex flex-col gap-6">
+          <div className="bg-white rounded-3xl border border-slate-100 p-6 shadow-[0px_2px_8px_0px_rgba(0,0,0,0.04)] flex flex-col min-h-[500px]">
+            <Label className="text-sm font-semibold text-slate-600 mb-4 block">Content</Label>
+            <div className="prose-container flex-1 flex flex-col">
+              <ReactQuill
+                theme="snow"
+                value={content}
+                onChange={setContent}
+                modules={QUILL_MODULES}
+                placeholder="Start writing your story..."
+                className="rounded-xl flex-1 flex flex-col border border-slate-100 overflow-hidden"
+                readOnly={loading}
               />
-              <button
-                type="button"
-                onClick={() => { setCoverImage(null); setCoverPreview(null); }}
-                className="absolute top-2 right-2 bg-red-500 text-white rounded-full p-1 hover:bg-red-600 transition-colors"
-              >
-                <X className="w-4 h-4" />
-              </button>
             </div>
-          ) : (
-            <label className="flex flex-col items-center justify-center h-40 border-2 border-dashed border-slate-200 rounded-xl cursor-pointer hover:border-violet-400 hover:bg-violet-50 transition-all duration-200">
-              <ImagePlus className="w-8 h-8 text-slate-300 mb-2" />
-              <span className="text-sm text-slate-400">Click to upload (max 2MB)</span>
-              <input
-                type="file"
-                accept="image/*"
-                className="hidden"
-                onChange={handleImageUpload}
-                disabled={loading}
-              />
-            </label>
-          )}
-        </div>
+          </div>
 
-        {/* Rich Text Editor */}
-        <div className="bg-white rounded-2xl border border-slate-100 p-6">
-          <Label className="text-base font-semibold text-slate-700 mb-3 block">Content</Label>
-          <ReactQuill
-            theme="snow"
-            value={content}
-            onChange={setContent}
-            modules={QUILL_MODULES}
-            placeholder="Start writing your story..."
-            className="rounded-lg"
-            readOnly={loading}
-          />
-        </div>
-
-        {/* Actions */}
-        <div className="flex items-center gap-4 justify-end">
-          <Button
-            type="button"
-            variant="outline"
-            onClick={() => router.push("/dashboard")}
-            disabled={loading}
-          >
-            Cancel
-          </Button>
-          <Button type="submit" variant="gradient" size="lg" className="gap-2" disabled={loading}>
-            {loading ? (
-              <><Loader2 className="w-4 h-4 animate-spin" /> Publishing...</>
-            ) : (
-              <><Send className="w-4 h-4" /> Publish Post</>
-            )}
-          </Button>
+          {/* Actions */}
+          <div className="flex items-center gap-4 justify-end">
+            <Button
+              type="button"
+              className="bg-white text-slate-600 hover:bg-slate-50 border border-slate-200 h-12 px-6 rounded-xl text-sm font-semibold shadow-sm"
+              onClick={() => router.push("/dashboard")}
+              disabled={loading}
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              className="h-12 px-8 rounded-xl bg-[#1d4ed8] hover:bg-[#1e40af] text-white border-0 font-semibold text-sm transition-transform active:scale-[0.98] gap-2 shadow-md shadow-blue-500/20" 
+              disabled={loading}
+            >
+              {loading ? (
+                <><Loader2 className="w-4 h-4 animate-spin mr-2" /> Publishing...</>
+              ) : (
+                <><Send className="w-4 h-4 -rotate-45" /> Publish Post</>
+              )}
+            </Button>
+          </div>
         </div>
       </form>
     </div>

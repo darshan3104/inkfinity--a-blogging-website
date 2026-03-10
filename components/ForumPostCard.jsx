@@ -64,7 +64,7 @@ export default function ForumPostCard({ post }) {
 
   return (
     <>
-      <article className="group bg-white/5 backdrop-blur-sm border border-white/10 rounded-2xl overflow-hidden hover:border-violet-500/40 hover:bg-white/10 transition-all duration-300 hover:shadow-2xl hover:shadow-violet-500/10 hover:-translate-y-0.5 flex flex-col">
+      <article className="group bg-white border border-slate-100 shadow-sm rounded-2xl overflow-hidden hover:border-indigo-200 hover:shadow-md transition-all duration-300 hover:-translate-y-1 flex flex-col">
         {/* Cover Image */}
         <Link href={`/blogs/${post._id}`} className="block relative h-48 overflow-hidden shrink-0">
           {post.coverImage ? (
@@ -74,16 +74,16 @@ export default function ForumPostCard({ post }) {
               className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
             />
           ) : (
-            <div className="w-full h-full bg-linear-to-br from-violet-900/60 to-indigo-900/60 flex items-center justify-center">
-              <span className="text-5xl opacity-30">✍️</span>
+            <div className="w-full h-full bg-slate-100 flex items-center justify-center">
+              <span className="text-5xl opacity-40">✍️</span>
             </div>
           )}
-          <div className="absolute inset-0 bg-linear-to-t from-black/60 via-transparent to-transparent" />
+          <div className="absolute inset-0 bg-linear-to-t from-slate-900/60 via-transparent to-transparent" />
 
           {/* Author badge on image */}
-          <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm rounded-full px-2.5 py-1">
-            <User className="w-3 h-3 text-violet-300" />
-            <span className="text-xs text-white/90 font-medium">
+          <div className="absolute bottom-3 left-3 flex items-center gap-1.5 bg-white/95 backdrop-blur-sm rounded-full px-3 py-1.5 shadow-sm">
+            <User className="w-3.5 h-3.5 text-indigo-500" />
+            <span className="text-[13px] text-slate-700 font-bold tracking-tight">
               {post.author?.name || "Anonymous"}
             </span>
           </div>
@@ -92,36 +92,37 @@ export default function ForumPostCard({ post }) {
         {/* Body */}
         <div className="p-5 flex flex-col flex-1">
           <Link href={`/blogs/${post._id}`} className="block flex-1">
-            <h2 className="text-base font-bold text-white mb-2 line-clamp-2 group-hover:text-violet-300 transition-colors duration-200 leading-snug">
+            <h2 className="text-lg font-bold text-slate-800 mb-2 line-clamp-2 group-hover:text-indigo-600 transition-colors duration-200 leading-snug">
               {post.title}
             </h2>
-            <p className="text-sm text-slate-400 line-clamp-2 leading-relaxed">
+            <p className="text-[15px] text-slate-500 line-clamp-2 leading-relaxed">
               {truncate(post.excerpt || "", 110)}
             </p>
           </Link>
 
-          <div className="mt-4 flex items-center justify-between">
+          <div className="mt-5 pt-4 flex items-center justify-between border-t border-slate-100">
             {/* Date */}
-            <span className="flex items-center gap-1 text-xs text-slate-500">
-              <Calendar className="w-3 h-3" />
+            <span className="flex items-center gap-1.5 text-[13px] font-medium text-slate-400">
+              <Calendar className="w-4 h-4" />
               {formatDate(post.createdAt)}
             </span>
 
             {/* Action buttons */}
-            <div className="flex items-center gap-1">
+            <div className="flex items-center gap-1.5">
               {/* Like */}
               <button
                 onClick={handleLike}
                 disabled={likeLoading}
-                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium transition-all duration-200 ${
+                className={`flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold transition-all duration-200 ${
                   liked
-                    ? "bg-rose-500/20 text-rose-400 hover:bg-rose-500/30"
-                    : "bg-white/5 text-slate-400 hover:bg-white/10 hover:text-rose-400"
+                    ? "bg-rose-50 text-rose-600 border border-rose-100 shrink-0"
+                    : "bg-slate-50 text-slate-500 border border-transparent hover:bg-rose-50 hover:text-rose-500 shrink-0"
                 }`}
                 aria-label="Like post"
               >
                 <Heart
-                  className={`w-3.5 h-3.5 transition-transform duration-150 ${liked ? "fill-rose-400 scale-110" : ""}`}
+                  strokeWidth={2.5}
+                  className={`w-4 h-4 transition-transform duration-150 ${liked ? "fill-rose-500 scale-110" : ""}`}
                 />
                 <span>{likeCount}</span>
               </button>
@@ -129,20 +130,20 @@ export default function ForumPostCard({ post }) {
               {/* Comment */}
               <button
                 onClick={handleCommentOpen}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 text-slate-400 hover:bg-white/10 hover:text-violet-400 transition-all duration-200"
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[13px] font-bold bg-slate-50 text-slate-500 border border-transparent hover:bg-indigo-50 hover:text-indigo-600 transition-all duration-200 shrink-0"
                 aria-label="Open comments"
               >
-                <MessageCircle className="w-3.5 h-3.5" />
+                <MessageCircle strokeWidth={2.5} className="w-4 h-4" />
                 <span>{commentCount}</span>
               </button>
 
               {/* Share */}
               <button
                 onClick={handleShare}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-xs font-medium bg-white/5 text-slate-400 hover:bg-white/10 hover:text-emerald-400 transition-all duration-200"
+                className="flex items-center gap-1.5 p-1.5 rounded-xl text-[13px] font-bold bg-slate-50 text-slate-400 border border-transparent hover:bg-emerald-50 hover:text-emerald-600 transition-all duration-200 shrink-0"
                 aria-label="Share post"
               >
-                <Share2 className="w-3.5 h-3.5" />
+                <Share2 strokeWidth={2.5} className="w-4 h-4" />
               </button>
             </div>
           </div>

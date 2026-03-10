@@ -16,13 +16,15 @@ import {
   X,
   ChevronRight,
   Globe,
+  Settings,
 } from "lucide-react";
 
 const navItems = [
   { href: "/dashboard", label: "My Posts", icon: LayoutDashboard },
+  { href: "/dashboard/manage", label: "Manage Posts", icon: Settings },
   { href: "/dashboard/create", label: "Create Post", icon: PenLine },
   { href: "/dashboard/profile", label: "Profile", icon: User },
-  {href: "/dashboard/forum", label:"Globe", icon: Globe}
+  { href: "/dashboard/forum", label: "Globe", icon: Globe }
 ];
 
 function DashboardSidebar({ mobile, onClose }) {

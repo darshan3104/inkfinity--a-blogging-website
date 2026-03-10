@@ -6,11 +6,9 @@ import { useRouter } from "next/navigation";
 import { postsApi } from "@/lib/api";
 import { useAuth } from "@/context/AuthContext";
 import { formatDate } from "@/lib/utils";
-import { Eye, ThumbsUp, DollarSign, Calendar, FileText, Clock } from "lucide-react";
+import { ThumbsUp, Calendar, FileText, Clock, MessageCircle } from "lucide-react";
 
 // Components
-import StatCard from "@/components/dashboard/StatCard";
-import ScheduleWidget from "@/components/dashboard/ScheduleWidget";
 import WelcomeBanner from "../../../components/dashboard/WelcomeBanner";
 
 export default function DashboardOverviewPage() {
@@ -26,16 +24,21 @@ export default function DashboardOverviewPage() {
   const fetchPosts = async () => {
     setLoading(true);
     try {
-      const { data } = await postsApi.getAll({ limit: 4, sort: "mostLiked" }); // getting top articles
-      // Filter out user's posts if we only want their posts, but for "Top articles" we can just show the site's top articles,
-      // or we can show the user's top articles. Mockup seems like an overview, so let's show user's.
+      // Since there isn't a dedicated endpoint for an author's posts,
+      // we fetch a larger batch of latest posts and filter client-side.
+      const { data } = await postsApi.getAll({ limit: 100, sort: "latest" }); 
+      
       const myPosts = (data.posts || []).filter(
         (p) => p.author?._id === user?.id || p.author?.email === user?.email
       );
-      setPosts(myPosts.slice(0, 4)); // Only top 4 as per mockup
-      // If the user has none, we'll still render an empty state or just an empty list.
+
+      // Sort the user's posts by most liked, then slice top 4
+      const myTopPosts = myPosts.sort((a, b) => (b.likeCount || 0) - (a.likeCount || 0)).slice(0, 4);
+      
+      setPosts(myTopPosts);
     } catch {
-      // toast or silent error
+      // safe fallback
+      setPosts([]);
     } finally {
       setLoading(false);
     }
@@ -48,9 +51,9 @@ export default function DashboardOverviewPage() {
         <WelcomeBanner userName={user?.name?.split(" ")[0]} />
 
         {/* Top Articles Section */}
-        <div className="bg-[#f8f9ff] rounded-2xl p-6 md:p-8 flex-1">
+        <div className="bg-white/80 backdrop-blur-3xl rounded-[2.5rem] p-6 md:p-8 flex-1 border border-slate-200/60 shadow-2xl shadow-slate-200/50 transition-all duration-300">
           <div className="flex items-center justify-between mb-8">
-            <h2 className="text-2xl font-serif font-bold text-[#1f2852]">Top articles</h2>
+            <h2 className="text-2xl font-bold text-slate-800 tracking-tight">Top Articles</h2>
           </div>
 
           <div className="flex flex-col gap-6">
@@ -58,17 +61,17 @@ export default function DashboardOverviewPage() {
               posts.map((post, index) => (
                 <article 
                   key={post._id} 
-                  className="flex flex-col sm:flex-row items-start sm:items-center gap-5 group cursor-pointer"
+                  className="flex flex-col sm:flex-row items-start sm:items-center gap-5 group cursor-pointer p-4 rounded-2xl hover:bg-white transition-colors border border-transparent hover:border-slate-100 hover:shadow-sm"
                   onClick={() => router.push(`/blogs/${post._id}`)}
                 >
-                  <span className="text-2xl font-bold text-[#cacedd] w-8 shrink-0">
+                  <span className="text-2xl font-bold text-slate-300 w-8 shrink-0 group-hover:text-blue-500 transition-colors">
                     {String(index + 1).padStart(2, "0")}
                   </span>
                   
                   {/* Thumbnail */}
-                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white shrink-0 shadow-sm border border-slate-100 flex items-center justify-center p-2">
+                  <div className="w-20 h-20 rounded-2xl overflow-hidden bg-white shrink-0 shadow-sm border border-slate-100 flex items-center justify-center p-0">
                      {post.coverImage ? (
-                        <img src={post.coverImage} alt="" className="w-full h-full object-contain rounded-xl" />
+                        <img src={post.coverImage} alt={post.title} className="w-full h-full object-cover rounded-xl" />
                       ) : (
                         <div className="w-full h-full bg-slate-100 rounded-xl flex items-center justify-center text-xl">✍️</div>
                      )}
@@ -76,36 +79,30 @@ export default function DashboardOverviewPage() {
 
                   {/* Title & Date */}
                   <div className="flex-1 min-w-0 pr-4">
-                    <h3 className="font-bold text-[#1f2852] text-base leading-snug line-clamp-2 md:line-clamp-1 mb-1 group-hover:text-blue-600 transition-colors">
+                    <h3 className="font-bold text-slate-800 text-base leading-snug line-clamp-2 md:line-clamp-1 mb-1 group-hover:text-blue-600 transition-colors">
                       {post.title}
                     </h3>
-                    <p className="text-sm text-[#9095af] font-medium">
+                    <p className="text-sm text-slate-500 font-medium">
                       {formatDate(post.createdAt)}
                     </p>
                   </div>
 
-                  {/* Stats (Mocked for Views/Earnings, real for likes if possible) */}
-                  <div className="flex items-center justify-between sm:justify-end gap-6 sm:gap-8 w-full sm:w-auto mt-2 sm:mt-0 px-2 sm:px-0 bg-white sm:bg-transparent py-3 sm:py-0 rounded-xl border border-slate-100 sm:border-transparent">
-                    <div className="flex items-center gap-2 text-[#464c70] font-bold">
-                      <Eye className="w-5 h-5 text-[#464c70]" />
-                      {(index + 2) * 1.3}K
+                  {/* Stats */}
+                  <div className="flex items-center justify-between sm:justify-end gap-6 sm:gap-8 w-full sm:w-auto mt-2 sm:mt-0 px-4 sm:px-0 bg-white sm:bg-transparent py-3 sm:py-0 rounded-xl border border-slate-100 sm:border-transparent">
+                    <div className="flex items-center gap-2 text-slate-600 font-bold group-hover:text-blue-600 transition-colors">
+                      <ThumbsUp className="w-5 h-5 text-rose-500" />
+                      {post.likeCount || 0}
                     </div>
-                    <div className="flex items-center gap-2 text-[#464c70] font-bold">
-                      <ThumbsUp className="w-5 h-5 text-[#ee9e9c]" />
-                      {post.likeCount || ((index + 1) * 0.8).toFixed(1) + "K"}
-                    </div>
-                    <div className="flex items-center gap-2 text-[#464c70] font-bold">
-                      <div className="w-5 h-5 rounded border border-slate-300 flex items-center justify-center">
-                        <DollarSign className="w-3.5 h-3.5 text-[#5e668c]" />
-                      </div>
-                      {(4 - index) * 12 + 10}
+                    <div className="flex items-center gap-2 text-slate-600 font-bold group-hover:text-blue-600 transition-colors">
+                      <MessageCircle className="w-5 h-5 text-blue-500" />
+                      {post.commentCount || 0}
                     </div>
                   </div>
                 </article>
               ))
             ) : (
-              <div className="text-center py-10">
-                <p className="text-[#9095af] font-medium">No top articles found yet.</p>
+              <div className="text-center py-10 bg-white rounded-2xl border border-slate-100">
+                <p className="text-slate-500 font-medium">No top articles found yet.</p>
                 <Link href="/dashboard/create" className="text-blue-600 font-bold hover:underline mt-2 inline-block">
                   Create your first article
                 </Link>
