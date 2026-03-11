@@ -504,7 +504,7 @@ export default function LandingPage() {
           <div className="absolute bottom-0 left-1/4 w-[600px] h-[600px] rounded-full bg-cyan-500/20 blur-[120px] mix-blend-screen pointer-events-none" />{" "}
           <div className="relative w-full h-full flex flex-col items-center justify-center text-center px-6 py-32 z-10">
             {" "}
-            <h2 className="text-5xl md:text-6xl font-extrabold text-white mb-8 tracking-tight">
+            <h2 className="text-5xl md:text-6xl font-extrabold text-black mb-8 tracking-tight">
               Ready to share your voice?
             </h2>{" "}
             <p className="text-slate-300 text-xl mb-12 max-w-2xl font-medium leading-relaxed">
